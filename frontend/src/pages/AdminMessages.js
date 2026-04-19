@@ -1,14 +1,11 @@
 // frontend/src/pages/AdminMessages.js
 import { useState, useEffect } from 'react';
-import { useAuth } from '../context/AuthContext';
 import API from '../api/axios';
 import '../styles/AdminMessages.css';
 
 const AdminMessages = () => {
-  const { user } = useAuth();
   const [messages, setMessages] = useState([]);
   const [selectedMessage, setSelectedMessage] = useState(null);
-  const [composeMode, setComposeMode] = useState(false);
   const [reply, setReply] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
   const [loading, setLoading] = useState(true);
@@ -39,6 +36,7 @@ const AdminMessages = () => {
         body: reply,
         parentMessage: selectedMessage._id,
       });
+
       setReply('');
       await loadMessages();
       alert('Reply sent successfully!');
@@ -61,7 +59,13 @@ const AdminMessages = () => {
   const markAsRead = async (id) => {
     try {
       await API.put(`/messages/${id}/read`);
-      setMessages(messages.map(m => m._id === id ? { ...m, isRead: true } : m));
+
+      setMessages(
+        messages.map(m =>
+          m._id === id ? { ...m, isRead: true } : m
+        )
+      );
+
       if (selectedMessage?._id === id) {
         setSelectedMessage({ ...selectedMessage, isRead: true });
       }
@@ -70,29 +74,28 @@ const AdminMessages = () => {
     }
   };
 
-  const filteredMessages = messages.filter(m => 
-    m.subject.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    m.sender?.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    m.body.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredMessages = messages.filter(m =>
+    m.subject?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    m.sender?.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    m.body?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  if (loading) return <div className="messages-loading">Loading messages...</div>;
+  if (loading) {
+    return <div className="messages-loading">Loading messages...</div>;
+  }
 
   return (
     <div className="admin-messages-page">
+
       <div className="messages-header">
         <h1>💬 Messages</h1>
-        <button 
-          className="btn-compose"
-          onClick={() => setComposeMode(true)}
-        >
-          ✉️ Compose New
-        </button>
       </div>
 
       <div className="messages-container">
-        {/* MESSAGES LIST */}
+
+        {/* LEFT PANEL */}
         <div className="messages-list-panel">
+
           <div className="search-box">
             <input
               type="text"
@@ -110,7 +113,9 @@ const AdminMessages = () => {
               filteredMessages.map(msg => (
                 <div
                   key={msg._id}
-                  className={`message-item ${selectedMessage?._id === msg._id ? 'active' : ''} ${!msg.isRead ? 'unread' : ''}`}
+                  className={`message-item ${
+                    selectedMessage?._id === msg._id ? 'active' : ''
+                  } ${!msg.isRead ? 'unread' : ''}`}
                   onClick={() => {
                     setSelectedMessage(msg);
                     if (!msg.isRead) markAsRead(msg._id);
@@ -122,21 +127,30 @@ const AdminMessages = () => {
                       {new Date(msg.createdAt).toLocaleDateString()}
                     </span>
                   </div>
-                  <p className="message-sender">From: {msg.sender?.name}</p>
-                  <p className="message-preview">{msg.body.substring(0, 50)}...</p>
+
+                  <p className="message-sender">
+                    From: {msg.sender?.name}
+                  </p>
+
+                  <p className="message-preview">
+                    {msg.body?.substring(0, 50)}...
+                  </p>
                 </div>
               ))
             )}
           </div>
         </div>
 
-        {/* MESSAGE DETAIL */}
+        {/* RIGHT PANEL */}
         <div className="message-detail-panel">
+
           {selectedMessage ? (
             <div className="message-detail">
+
               <div className="detail-header">
                 <h2>{selectedMessage.subject}</h2>
-                <button 
+
+                <button
                   className="btn-delete"
                   onClick={() => deleteMessage(selectedMessage._id)}
                 >
@@ -145,18 +159,15 @@ const AdminMessages = () => {
               </div>
 
               <div className="message-meta">
-                <div className="meta-item">
-                  <span className="meta-label">From:</span>
-                  <span className="meta-value">{selectedMessage.sender?.name} ({selectedMessage.sender?.email})</span>
-                </div>
-                <div className="meta-item">
-                  <span className="meta-label">To:</span>
-                  <span className="meta-value">{selectedMessage.recipient?.name} ({selectedMessage.recipient?.email})</span>
-                </div>
-                <div className="meta-item">
-                  <span className="meta-label">Date:</span>
-                  <span className="meta-value">{new Date(selectedMessage.createdAt).toLocaleString()}</span>
-                </div>
+                <p>
+                  <strong>From:</strong>{" "}
+                  {selectedMessage.sender?.name} ({selectedMessage.sender?.email})
+                </p>
+
+                <p>
+                  <strong>Date:</strong>{" "}
+                  {new Date(selectedMessage.createdAt).toLocaleString()}
+                </p>
               </div>
 
               <div className="message-body">
@@ -165,6 +176,7 @@ const AdminMessages = () => {
 
               <div className="reply-section">
                 <h3>📬 Reply</h3>
+
                 <textarea
                   value={reply}
                   onChange={(e) => setReply(e.target.value)}
@@ -172,7 +184,8 @@ const AdminMessages = () => {
                   className="reply-input"
                   rows={5}
                 />
-                <button 
+
+                <button
                   className="btn-send-reply"
                   onClick={handleReply}
                   disabled={!reply.trim()}
@@ -180,12 +193,14 @@ const AdminMessages = () => {
                   ✉️ Send Reply
                 </button>
               </div>
+
             </div>
           ) : (
             <div className="no-message-selected">
               <p>👈 Select a message to view details</p>
             </div>
           )}
+
         </div>
       </div>
     </div>
