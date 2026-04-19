@@ -1,0 +1,78 @@
+/* frontend/src/styles/Reactions.css */
+
+.reactions-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    align-items: flex-start;
+}
+
+.reactions-flex-container {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap; /* Allows icons to wrap on small mobile screens */
+}
+
+.reaction-pill {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid #30363d;
+    padding: 8px 12px;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+}
+
+.reaction-pill:hover {
+    background: rgba(0, 242, 255, 0.1);
+    border-color: #00f2ff;
+    transform: translateY(-2px);
+}
+
+.reaction-pill.active {
+    background: rgba(0, 242, 255, 0.2);
+    border-color: #00f2ff;
+    box-shadow: 0 0 10px rgba(0, 242, 255, 0.3);
+}
+
+.emoji {
+    font-size: 1.2rem;
+    transition: 0.3s;
+}
+
+.reaction-pill:disabled {
+    opacity: 0.7;
+    cursor: wait;
+}
+
+.reaction-stats-bar {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+    font-family: 'Cinzel', serif;
+}
+
+.count-glitch {
+    font-size: 1.4rem;
+    color: #00f2ff;
+    font-weight: bold;
+}
+
+.label-text {
+    font-size: 0.7rem;
+    letter-spacing: 2px;
+    color: #8b949e;
+}
+
+/* Mobile Adjustments */
+@media (max-width: 480px) {
+    .reaction-pill {
+        padding: 6px 10px;
+    }
+    .emoji {
+        font-size: 1rem;
+    }
+}

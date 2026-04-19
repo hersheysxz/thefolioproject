@@ -1,0 +1,364 @@
+/* frontend/src/styles/AdminMessages.css */
+
+.admin-messages-page {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.messages-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  padding: 20px;
+  background: linear-gradient(135deg, var(--box), var(--accent));
+  border-radius: 12px;
+  gap: 20px;
+}
+
+.messages-header h1 {
+  margin: 0;
+  color: var(--text);
+  font-size: 2rem;
+}
+
+.btn-compose {
+  padding: 12px 24px;
+  background: var(--accent);
+  color: var(--btn-text);
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.btn-compose:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 38, 77, 0.3);
+}
+
+.messages-container {
+  display: grid;
+  grid-template-columns: 350px 1fr;
+  gap: 20px;
+  min-height: 600px;
+  background: var(--box);
+  border: 2px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+/* MESSAGES LIST */
+.messages-list-panel {
+  border-right: 2px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  background: var(--input-bg);
+}
+
+.search-box {
+  padding: 15px;
+  border-bottom: 1px solid var(--border);
+}
+
+.search-input {
+  width: 100%;
+  padding: 10px 15px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--input-bg);
+  color: var(--text);
+  font-size: 0.95rem;
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(0, 38, 77, 0.1);
+}
+
+.messages-list {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.message-item {
+  padding: 15px;
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background: var(--input-bg);
+}
+
+.message-item:hover {
+  background: var(--box);
+}
+
+.message-item.active {
+  background: rgba(0, 38, 77, 0.1);
+  border-left: 4px solid var(--accent);
+}
+
+.message-item.unread {
+  background: rgba(0, 38, 77, 0.05);
+  font-weight: 600;
+}
+
+.message-item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: start;
+  margin-bottom: 8px;
+  gap: 10px;
+}
+
+.message-item-header h4 {
+  margin: 0;
+  color: var(--text);
+  font-size: 0.95rem;
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.message-time {
+  font-size: 0.8rem;
+  color: var(--text);
+  opacity: 0.6;
+  white-space: nowrap;
+}
+
+.message-sender {
+  font-size: 0.85rem;
+  color: var(--text);
+  opacity: 0.8;
+  margin: 5px 0;
+}
+
+.message-preview {
+  font-size: 0.9rem;
+  color: var(--text);
+  opacity: 0.7;
+  margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.no-messages {
+  padding: 30px 15px;
+  text-align: center;
+  color: var(--text);
+  opacity: 0.6;
+}
+
+/* MESSAGE DETAIL */
+.message-detail-panel {
+  padding: 25px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.message-detail {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.detail-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 15px;
+  padding-bottom: 15px;
+  border-bottom: 2px solid var(--border);
+}
+
+.detail-header h2 {
+  margin: 0;
+  color: var(--text);
+  flex: 1;
+}
+
+.btn-delete {
+  padding: 8px 16px;
+  background: #dc3545;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.btn-delete:hover {
+  background: #c82333;
+  transform: scale(1.05);
+}
+
+.message-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 15px;
+  background: var(--input-bg);
+  border-radius: 6px;
+  border: 1px solid var(--border);
+}
+
+.meta-item {
+  display: flex;
+  gap: 10px;
+  align-items: start;
+}
+
+.meta-label {
+  font-weight: 600;
+  min-width: 80px;
+  color: var(--accent);
+}
+
+.meta-value {
+  color: var(--text);
+  flex: 1;
+  word-break: break-word;
+}
+
+.message-body {
+  padding: 20px;
+  background: var(--input-bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text);
+  line-height: 1.8;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
+.reply-section {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  padding-top: 20px;
+  border-top: 2px solid var(--border);
+}
+
+.reply-section h3 {
+  margin: 0;
+  color: var(--text);
+}
+
+.reply-input {
+  padding: 15px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--input-bg);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 0.95rem;
+  resize: vertical;
+}
+
+.reply-input:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(0, 38, 77, 0.1);
+}
+
+.btn-send-reply {
+  align-self: flex-end;
+  padding: 10px 24px;
+  background: var(--accent);
+  color: var(--btn-text);
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-send-reply:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 38, 77, 0.3);
+}
+
+.btn-send-reply:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.no-message-selected {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: var(--text);
+  opacity: 0.6;
+  font-size: 1.1rem;
+}
+
+.messages-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 600px;
+  color: var(--text);
+  opacity: 0.7;
+  font-size: 1.1rem;
+}
+
+/* RESPONSIVE */
+@media (max-width: 968px) {
+  .messages-container {
+    grid-template-columns: 1fr;
+    min-height: auto;
+  }
+
+  .messages-list-panel {
+    border-right: none;
+    border-bottom: 2px solid var(--border);
+    max-height: 300px;
+  }
+
+  .messages-header {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .messages-header h1 {
+    font-size: 1.5rem;
+  }
+
+  .btn-compose {
+    width: 100%;
+  }
+}
+
+@media (max-width: 640px) {
+  .admin-messages-page {
+    padding: 10px;
+  }
+
+  .messages-header {
+    padding: 15px;
+  }
+
+  .message-detail-panel {
+    padding: 15px;
+  }
+
+  .detail-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .btn-delete {
+    width: 100%;
+  }
+}
