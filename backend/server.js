@@ -27,7 +27,7 @@ app.use(
     origin: [
       "http://localhost:3000",
       "http://localhost:5173",
-      "https://thefolioproject-7lod.vercel.app/"
+      "https://thefolioproject-7lod.vercel.app"
     ],
     credentials: true,
   })
