@@ -10,6 +10,7 @@ const PostPage = () => {
   const { id } = useParams();
   useAuth();
   const navigate = useNavigate();
+
   const [post, setPost] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -25,6 +26,7 @@ const PostPage = () => {
         setLoading(false);
       }
     };
+
     fetchPost();
   }, [id]);
 
@@ -42,32 +44,36 @@ const PostPage = () => {
         <main className='post-main-content'>
           {post.image && (
             <div className='exhibit-frame'>
-              <img 
-                src={`http://localhost:5000/uploads/${post.image}`} 
-                alt={post.title} 
-                className='exhibit-img' 
+              <img
+                src={`${process.env.REACT_APP_BACKEND_URL}/uploads/${post.image}`}
+                alt={post.title}
+                className='exhibit-img'
               />
             </div>
           )}
-          
+
           <div className='post-details'>
             <h1 className='exhibit-title'>{post.title}</h1>
+
             <p className='exhibit-meta'>
-              By <strong>{post.author?.name}</strong> • {new Date(post.createdAt).toLocaleDateString()}
+              By <strong>{post.author?.name}</strong> •{" "}
+              {new Date(post.createdAt).toLocaleDateString()}
             </p>
-            
+
             <div className='exhibit-body'>
-              {post.body.split('\n').map((p, i) => <p key={i}>{p}</p>)}
+              {post.body.split('\n').map((p, i) => (
+                <p key={i}>{p}</p>
+              ))}
             </div>
 
-            {/* RESPONSIVE REACTION BAR */}
+            {/* REACTIONS */}
             <section className='interaction-zone'>
               <Reactions postId={id} initialLikes={post.likes || []} />
             </section>
           </div>
         </main>
 
-        {/* FEEDBACK COLUMN */}
+        {/* COMMENTS */}
         <aside className='post-sidebar'>
           <div className='sticky-wrapper'>
             <h3 className='sidebar-header'>COMMUNITY FEEDBACK</h3>

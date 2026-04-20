@@ -1,59 +1,70 @@
-// backend/server.js
-
-require('dotenv').config(); // Load env FIRST
-
-const express = require('express');
-const cors = require('cors');
-const path = require('path');
-const connectDB = require('./config/db');
+import express from "express";
+import cors from "cors";
+import dotenv from "dotenv";
+import mongoose from "mongoose";
+import path from "path";
 
 // Routes
-const authRoutes = require('./Routes/auth.routes');
-const postRoutes = require('./Routes/post.routes');
-const commentRoutes = require('./Routes/comment.routes');
-const adminRoutes = require('./Routes/admin.routes');
-const messageRoutes = require('./Routes/messages');
+import authRoutes from "./routes/auth.routes.js";
+import postRoutes from "./routes/post.routes.js";
+import commentRoutes from "./routes/comment.routes.js";
+
+dotenv.config();
 
 const app = express();
 
-// ── CONNECT DATABASE ─────────────────────────────
-connectDB();
-
-// ── MIDDLEWARE ───────────────────────────────────
-
-// ⚡ Production-safe CORS (Vercel + localhost + Render)
-app.use(cors({
-  origin: true,
-  credentials: true
-}));
-
-// Parse JSON
+// ======================
+// MIDDLEWARE
+// ======================
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
-// Serve uploaded files
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+// ======================
+// CORS CONFIG
+// ======================
+app.use(
+  cors({
+    origin: [
+      "http://localhost:3000",
+      "http://localhost:5173",
+      "https://thefolioproject-7lod.vercel.app/"
+    ],
+    credentials: true,
+  })
+);
 
-// ── ROUTES ────────────────────────────────────────
-app.use('/api/auth', authRoutes);
-app.use('/api/posts', postRoutes);
-app.use('/api/comments', commentRoutes);
-app.use('/api/admin', adminRoutes);
-app.use('/api/messages', messageRoutes);
+// ======================
+// STATIC FILES (UPLOADS)
+// ======================
+app.use("/uploads", express.static("uploads"));
 
-// ── HEALTH CHECK ROUTE ────────────────────────────
-app.get('/', (req, res) => {
-  res.send('API is running...');
+// ======================
+// ROUTES
+// ======================
+app.use("/api/auth", authRoutes);
+app.use("/api/posts", postRoutes);
+app.use("/api/comments", commentRoutes);
+
+// ======================
+// HEALTH CHECK
+// ======================
+app.get("/", (req, res) => {
+  res.send("API is running...");
 });
 
-// ── GLOBAL ERROR HANDLER ─────────────────────────
-app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).json({ message: 'Server Error' });
-});
+// ======================
+// DATABASE CONNECTION
+// ======================
+mongoose
+  .connect(process.env.MONGO_URI)
+  .then(() => {
+    console.log("MongoDB Connected");
 
-// ── START SERVER ──────────────────────────────────
-const PORT = process.env.PORT || 5000;
-
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+    const PORT = process.env.PORT || 5000;
+    app.listen(PORT, () => {
+      console.log(`Server running on port ${PORT}`);
+    });
+  })
+  .catch((err) => {
+    console.error("MongoDB connection failed:", err.message);
+  });

@@ -52,7 +52,8 @@ function HomePage() {
                 ALMOST <br /> REAL
               </h1>
               <p className="poster-quote">
-                "ART IS THE DOORWAY TO WHAT REALITY REFUSES TO SHOW." - <span>UNKNOWN</span>
+                "ART IS THE DOORWAY TO WHAT REALITY REFUSES TO SHOW." -{" "}
+                <span>UNKNOWN</span>
               </p>
             </div>
           </div>
@@ -65,10 +66,11 @@ function HomePage() {
             </div>
             <div className="intro-body">
               <p className="main-description">
-                Welcome to <strong>Almost Real</strong>, a personal art portfolio exploring
-                surreal emotions and visual storytelling that blurs the line between
-                imagination and reality.
+                Welcome to <strong>Almost Real</strong>, a personal art portfolio
+                exploring surreal emotions and visual storytelling that blurs
+                the line between imagination and reality.
               </p>
+
               <div className="highlights-grid">
                 <div className="h-card">
                   <span className="h-num">01</span>
@@ -98,13 +100,15 @@ function HomePage() {
                   <h2 className="section-heading">My Favorite Author</h2>
                   <div className="heading-line"></div>
                   <p>
-                    I am fascinated by Junji Ito&apos;s work for its visual power and bizarre
-                    concepts that remain grounded in normal life.
+                    I am fascinated by Junji Ito's work for its visual power and
+                    bizarre concepts that remain grounded in normal life.
                   </p>
                   <blockquote className="neutral-quote">
-                    "Many of his tales revolve around fears, obsessions, and phobias."
+                    "Many of his tales revolve around fears, obsessions, and
+                    phobias."
                   </blockquote>
                 </div>
+
                 <div className="author-image-box">
                   <img src={junji} alt="Junji Ito" className="author-img" />
                   <p className="img-subtext">The Master of Horror Manga</p>
@@ -117,11 +121,31 @@ function HomePage() {
             <div className="gallery-container">
               <div className="gallery-header">
                 <h2 className="section-heading">Art Gallery</h2>
-                <p className="gallery-count">Inspiration: Junji Ito and Vincent Van Gogh</p>
+                <p className="gallery-count">
+                  Inspiration: Junji Ito and Vincent Van Gogh
+                </p>
                 <div className="heading-line"></div>
               </div>
+
               <div className="gallery-grid">
-                {[art17, art2, art3, art14, art5, art6, art7, art20, art12, art11, art10, art18, art19, art9, art24, art21].map((img, index) => (
+                {[
+                  art17,
+                  art2,
+                  art3,
+                  art14,
+                  art5,
+                  art6,
+                  art7,
+                  art20,
+                  art12,
+                  art11,
+                  art10,
+                  art18,
+                  art19,
+                  art9,
+                  art24,
+                  art21,
+                ].map((img, index) => (
                   <div key={index} className="art-frame">
                     <img src={img} alt="Gallery item" />
                   </div>
@@ -137,45 +161,68 @@ function HomePage() {
                 <h2>Latest Posts</h2>
                 <p>Explore community posts and artistic insights.</p>
               </div>
+
               {user && (
-                <Link
-                  to="/write"
-                  className="latest-posts-cta"
-                >
+                <Link to="/write" className="latest-posts-cta">
                   + Write a Post
                 </Link>
               )}
             </div>
 
             {loading && <p>Loading exhibits...</p>}
-            {!loading && posts.length === 0 && <p>No posts yet. Start the conversation!</p>}
+            {!loading && posts.length === 0 && (
+              <p>No posts yet. Start the conversation!</p>
+            )}
 
             <div className="posts-grid">
               {posts.map((post) => (
                 <div key={post._id} className="post-card">
                   {post.image && (
                     <div className="post-card-img">
-                      <img src={`http://localhost:5000/uploads/${post.image}`} alt={post.title} />
+                      <img
+                        src={`${process.env.REACT_APP_BACKEND_URL}/uploads/${post.image}`}
+                        alt={post.title}
+                      />
                     </div>
                   )}
+
                   <div className="post-card-body">
                     <h3>
-                      <Link to={`/posts/${post._id}`}>{post.title}</Link>
+                      <Link to={`/posts/${post._id}`}>
+                        {post.title}
+                      </Link>
                     </h3>
+
                     <p>{post.body.substring(0, 120)}...</p>
 
                     <div className="post-card-footer">
                       <div className="post-meta">
-                        By <strong>{post.author?.name || "Unknown"}</strong> <br />
-                        <span>{new Date(post.createdAt).toLocaleDateString()}</span>
+                        By{" "}
+                        <strong>
+                          {post.author?.name || "Unknown"}
+                        </strong>
+                        <br />
+                        <span>
+                          {new Date(
+                            post.createdAt
+                          ).toLocaleDateString()}
+                        </span>
                       </div>
 
                       <div className="latest-post-card-bottom">
                         <div className="post-interactions">
-                          <span className="stat-item">❤️ {post.likes || 0}</span>
-                          <span className="stat-item">💬 {post.commentsCount || 0}</span>
+                          <span className="stat-item">
+                            ❤️ {post.likes || 0}
+                          </span>
+                          <span className="stat-item">
+                            💬 {post.commentsCount || 0}
+                          </span>
                         </div>
-                        <Link to={`/posts/${post._id}`} className="latest-post-view-btn">
+
+                        <Link
+                          to={`/posts/${post._id}`}
+                          className="latest-post-view-btn"
+                        >
                           View Post
                         </Link>
                       </div>
@@ -189,7 +236,10 @@ function HomePage() {
       </main>
 
       <footer className="footer">
-        <p>Contact: rachelregacho645@gmail.com | Instagram: @almostreal</p>
+        <p>
+          Contact: rachelregacho645@gmail.com | Instagram:
+          @almostreal
+        </p>
         <p>Copyright 2026 Almost Real Portfolio</p>
       </footer>
     </div>
