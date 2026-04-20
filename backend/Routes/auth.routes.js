@@ -1,28 +1,31 @@
-const express = require('express');
-const jwt = require('jsonwebtoken');
-const User = require('../models/User');
-const { protect } = require('../middleware/auth.middleware');
-const upload = require('../middleware/upload');
+import express from "express";
+import jwt from "jsonwebtoken";
+import User from "../models/User.js";
+import { protect } from "../middleware/auth.middleware.js";
+import upload from "../middleware/upload.js";
 
 const router = express.Router();
 
-// Helper function — generates a JWT token
+// Generate JWT token
 const generateToken = (id) => {
   if (!process.env.JWT_SECRET) {
-    throw new Error('JWT_SECRET is not defined');
+    throw new Error("JWT_SECRET is not defined");
   }
-  return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: '7d' });
+
+  return jwt.sign({ id }, process.env.JWT_SECRET, {
+    expiresIn: "7d",
+  });
 };
 
-// POST /api/auth/register
-router.post('/register', async (req, res) => {
+// REGISTER
+router.post("/register", async (req, res) => {
   const { name, email, password } = req.body;
 
   try {
     const exists = await User.findOne({ email });
 
     if (exists) {
-      return res.status(400).json({ message: 'Email is already registered' });
+      return res.status(400).json({ message: "Email is already registered" });
     }
 
     const user = await User.create({ name, email, password });
@@ -41,24 +44,25 @@ router.post('/register', async (req, res) => {
   }
 });
 
-// POST /api/auth/login
-router.post('/login', async (req, res) => {
+// LOGIN
+router.post("/login", async (req, res) => {
   const { email, password } = req.body;
 
   try {
     const user = await User.findOne({ email });
 
     if (!user) {
-      return res.status(400).json({ message: 'Invalid email or password' });
+      return res.status(400).json({ message: "Invalid email or password" });
     }
 
-    if (user.status === 'inactive') {
-      return res.status(403).json({ message: 'Your account is deactivated.' });
+    if (user.status === "inactive") {
+      return res.status(403).json({ message: "Your account is deactivated." });
     }
 
     const match = await user.matchPassword(password);
+
     if (!match) {
-      return res.status(400).json({ message: 'Invalid email or password' });
+      return res.status(400).json({ message: "Invalid email or password" });
     }
 
     res.json({
@@ -76,75 +80,82 @@ router.post('/login', async (req, res) => {
   }
 });
 
-// GET /api/auth/me
-router.get('/me', protect, async (req, res) => {
+// GET ME
+router.get("/me", protect, async (req, res) => {
   try {
-    const user = await User.findById(req.user._id).select('-password');
+    const user = await User.findById(req.user._id).select("-password");
     res.json(user);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
 });
 
-// PUT /api/auth/profile - Update user profile
-router.put('/profile', protect, upload.single('profilePic'), async (req, res) => {
-  try {
-    const { name, bio } = req.body;
-    const user = await User.findById(req.user._id);
+// UPDATE PROFILE
+router.put(
+  "/profile",
+  protect,
+  upload.single("profilePic"),
+  async (req, res) => {
+    try {
+      const { name, bio } = req.body;
+      const user = await User.findById(req.user._id);
 
-    if (!user) {
-      return res.status(404).json({ message: 'User not found' });
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      if (name) user.name = name;
+      if (bio) user.bio = bio;
+      if (req.file) user.profilePic = req.file.filename;
+
+      await user.save();
+
+      res.json({
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        bio: user.bio,
+        profilePic: user.profilePic,
+        role: user.role,
+      });
+    } catch (err) {
+      res.status(500).json({ message: err.message });
     }
-
-    // Update fields
-    if (name) user.name = name;
-    if (bio) user.bio = bio;
-    if (req.file) user.profilePic = req.file.filename;
-
-    await user.save();
-
-    res.json({
-      _id: user._id,
-      name: user.name,
-      email: user.email,
-      bio: user.bio,
-      profilePic: user.profilePic,
-      role: user.role,
-    });
-  } catch (err) {
-    res.status(500).json({ message: err.message });
   }
-});
+);
 
-// PUT /api/auth/change-password - Change user password
-router.put('/change-password', protect, async (req, res) => {
+// CHANGE PASSWORD
+router.put("/change-password", protect, async (req, res) => {
   try {
     const { currentPassword, newPassword } = req.body;
 
     if (!currentPassword || !newPassword) {
-      return res.status(400).json({ message: 'Current and new password are required' });
+      return res
+        .status(400)
+        .json({ message: "Current and new password are required" });
     }
 
     const user = await User.findById(req.user._id);
 
     if (!user) {
-      return res.status(404).json({ message: 'User not found' });
+      return res.status(404).json({ message: "User not found" });
     }
 
-    // Verify current password
     const isMatch = await user.matchPassword(currentPassword);
+
     if (!isMatch) {
-      return res.status(400).json({ message: 'Current password is incorrect' });
+      return res
+        .status(400)
+        .json({ message: "Current password is incorrect" });
     }
 
-    // Update password
     user.password = newPassword;
     await user.save();
 
-    res.json({ message: 'Password changed successfully' });
+    res.json({ message: "Password changed successfully" });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
 });
 
-module.exports = router;
+export default router;

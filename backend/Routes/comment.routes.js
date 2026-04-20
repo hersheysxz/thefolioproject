@@ -1,18 +1,17 @@
-// backend/routes/comment.routes.js
-
-const express = require('express');
-const Comment = require('../models/Comment');
-const { protect } = require('../middleware/auth.middleware');
-const { memberOrAdmin } = require('../middleware/role.middleware');
+import express from "express";
+import Comment from "../models/Comment.js";
+import { protect } from "../middleware/auth.middleware.js";
 
 const router = express.Router();
 
-// GET /api/comments/:postId — Public: all comments for a post
-router.get('/:postId', async (req, res) => {
+/**
+ * GET comments for a post
+ */
+router.get("/:postId", async (req, res) => {
   try {
-    const comments = await Comment.find({ post: req.params.postId })
-      .populate('author', 'name profilePic')
-      .sort({ createdAt: 1 }); // oldest first
+    const comments = await Comment.find({
+      postId: req.params.postId,
+    }).populate("user", "name profilePic");
 
     res.json(comments);
   } catch (err) {
@@ -20,60 +19,46 @@ router.get('/:postId', async (req, res) => {
   }
 });
 
-// POST /api/comments/:postId — Member/Admin: add a comment
-router.post('/:postId', protect, memberOrAdmin, async (req, res) => {
+/**
+ * CREATE comment
+ */
+router.post("/:postId", protect, async (req, res) => {
   try {
-    const { body } = req.body;
-
-    if (!body) {
-      return res.status(400).json({
-        message: 'Comment body is required',
-      });
-    }
-
     const comment = await Comment.create({
-      post: req.params.postId,
-      author: req.user._id,
-      body,
+      postId: req.params.postId,
+      user: req.user._id,
+      text: req.body.text,
     });
 
-    await comment.populate('author', 'name profilePic');
+    const populated = await comment.populate("user", "name profilePic");
 
-    res.status(201).json(comment);
+    res.status(201).json(populated);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
 });
 
-// DELETE /api/comments/:id — Own comment OR admin
-router.delete('/:id', protect, memberOrAdmin, async (req, res) => {
+/**
+ * DELETE comment
+ */
+router.delete("/:id", protect, async (req, res) => {
   try {
     const comment = await Comment.findById(req.params.id);
 
     if (!comment) {
-      return res.status(404).json({
-        message: 'Comment not found',
-      });
+      return res.status(404).json({ message: "Comment not found" });
     }
 
-    const isOwner =
-      comment.author.toString() === req.user._id.toString();
-    const isAdmin = req.user.role === 'admin';
-
-    if (!isOwner && !isAdmin) {
-      return res.status(403).json({
-        message: 'Not authorized',
-      });
+    if (comment.user.toString() !== req.user._id.toString()) {
+      return res.status(403).json({ message: "Not authorized" });
     }
 
     await comment.deleteOne();
 
-    res.json({
-      message: 'Comment deleted',
-    });
+    res.json({ message: "Comment deleted" });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
 });
 
-module.exports = router;
+export default router;
